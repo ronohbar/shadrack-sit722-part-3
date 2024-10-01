@@ -1,1 +1,49 @@
-# Your Solution
+#
+# Deploys the video-streaming microservice to Kubernetes.
+# 
+# To deploy:
+#
+# export CONTAINER_REGISTRY=<your-container-registry>
+# export VERSION=<the-version-to-deploy>
+# envsubst < ./scripts/kubernetes/deploy.yaml | kubectl apply -f -
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Microservice Deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sit722-microservice
+  template:
+    metadata:
+      labels:
+        app: sit722-microservice
+    spec:
+      containers: 
+      - name: book-catalog
+        image: $CONTAINER_REGISTRY/book-catalog:$VERSION
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DATABASE_URL
+          value: ${DATABASE_URL}
+      - name: inventory-management
+        image: $CONTAINER_REGISTRY/inventory-management:$VERSION
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DATABASE_URL
+          value: ${DATABASE_URL}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sit722-microservice
+spec:
+  selector:
+    app: sit722-microservice
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
