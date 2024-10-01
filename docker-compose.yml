@@ -7,7 +7,7 @@ services:
     image: book-catalog
     container_name: book-catalog
     ports:
-      - 8000:80
+      - 8000:8000
     environment:
       - DATABASE_URL=${DATABASE_URL}
   inventory:
@@ -17,6 +17,6 @@ services:
     image: inventory-management
     container_name: inventory_management
     ports:
-      - 8001:80
+      - 8001:8001
     environment:
       - DATABASE_URL=${DATABASE_URL}
